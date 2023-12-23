@@ -1,4 +1,4 @@
-import { Product, User } from "./models";
+import { Article, Product, User, Record } from "./models";
 import { connectToDB } from "./utils";
 
 export const fetchUsers = async (q, page) => {
@@ -35,7 +35,7 @@ export const fetchProducts = async (q, page) => {
   console.log(q);
   const regex = new RegExp(q, "i");
 
-  const ITEM_PER_PAGE = 2;
+  const ITEM_PER_PAGE = 5;
 
   try {
     connectToDB();
@@ -61,25 +61,86 @@ export const fetchProduct = async (id) => {
   }
 };
 
+export const fetchArticles = async (q, page) => {
+  console.log(q);
+  const regex = new RegExp(q, "i");
+
+  const ITEM_PER_PAGE = 5;
+
+  try {
+    connectToDB();
+    const count = await Article.find({ title: { $regex: regex } }).count();
+    const articles = await Article.find({ title: { $regex: regex } })
+      .limit(ITEM_PER_PAGE)
+      .skip(ITEM_PER_PAGE * (page - 1));
+    return { count, articles };
+  } catch (err) {
+    console.log(err);
+    throw new Error("Failed to fetch articles!");
+  }
+};
+
+export const fetchArticle = async (id) => {
+  try {
+    connectToDB();
+    const article = await Article.findById(id);
+    return article;
+  } catch (err) {
+    console.log(err);
+    throw new Error("Failed to fetch article!");
+  }
+};
+
+export const fetchRecords = async (q, page) => {
+  console.log(q);
+  const regex = new RegExp(q, "i");
+
+  const ITEM_PER_PAGE = 5;
+
+  try {
+    connectToDB();
+    const count = await Record.find({ id: { $regex: regex } }).count();
+    const records = await Record.find({ id: { $regex: regex } })
+      .limit(ITEM_PER_PAGE)
+      .skip(ITEM_PER_PAGE * (page - 1));
+    return { count, records };
+  } catch (err) {
+    console.log(err);
+    throw new Error("Failed to fetch records!");
+  }
+};
+
+export const fetchRecord = async (id) => {
+  console.log(id);
+  try {
+    connectToDB();
+    const record = await Record.findById(id);
+    return record;
+  } catch (err) {
+    console.log(err);
+    throw new Error("Failed to fetch record!");
+  }
+};
+
 // DUMMY DATA
 
 export const cards = [
   {
     id: 1,
-    title: "Total Users",
-    number: 10.928,
+    title: "Received",
+    number: 85,
     change: 12,
   },
   {
     id: 2,
-    title: "Stock",
-    number: 8.236,
+    title: "Completed",
+    number: 190,
     change: -2,
   },
   {
     id: 3,
-    title: "Revenue",
-    number: 6.642,
+    title: "Authorized",
+    number: 263,
     change: 18,
   },
 ];

@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { Product, User } from "./models";
+import { Article, Product, User, Record } from "./models";
 import { connectToDB } from "./utils";
 import { redirect } from "next/navigation";
 import bcrypt from "bcrypt";
@@ -126,6 +126,106 @@ export const updateProduct = async (formData) => {
   redirect("/dashboard/products");
 };
 
+export const addRecord = async (formData) => {
+  const { inputId, template, location, sampledDate, recdDate, completedDate, authorizedDate } =
+    Object.fromEntries(formData);
+
+  try {
+    connectToDB();
+
+    const newRecord = new Record({
+      inputId, template, location, sampledDate, recdDate, completedDate, authorizedDate
+    });
+
+    await newRecord.save();
+  } catch (err) {
+    console.log(err);
+    throw new Error("Failed to create record!");
+  }
+
+  revalidatePath("/dashboard/records");
+  redirect("/dashboard/records");
+};
+
+export const updateRecord = async (formData) => {
+  const { id, inputId, template, location, sampledDate, recdDate, completedDate, authorizedDate} =
+    Object.fromEntries(formData);
+
+  try {
+    connectToDB();
+
+    const updateFields = {
+      id, inputId, template, location, sampledDate, recdDate, completedDate, authorizedDate
+    };
+
+    Object.keys(updateFields).forEach(
+      (key) =>
+        (updateFields[key] === "" || undefined) && delete updateFields[key]
+    );
+
+    await Record.findByIdAndUpdate(id, updateFields);
+  } catch (err) {
+    console.log(err);
+    throw new Error("Failed to update record!");
+  }
+
+  revalidatePath("/dashboard/records");
+  redirect("/dashboard/records");
+};
+
+export const addArticle = async (formData) => {
+  const { title, desc, author, img } =
+    Object.fromEntries(formData);
+
+  try {
+    connectToDB();
+
+    const newArticle = new Article({
+      title,
+      desc,
+      author,
+      img
+    });
+
+    await newArticle.save();
+  } catch (err) {
+    console.log(err);
+    throw new Error("Failed to create article!");
+  }
+
+  revalidatePath("/dashboard/news");
+  redirect("/dashboard/news");
+};
+
+export const updateArticle = async (formData) => {
+  const { id, title, desc, author, img} =
+    Object.fromEntries(formData);
+
+  try {
+    connectToDB();
+
+    const updateFields = {
+      title,
+      desc,
+      author,
+      img
+    };
+
+    Object.keys(updateFields).forEach(
+      (key) =>
+        (updateFields[key] === "" || undefined) && delete updateFields[key]
+    );
+
+    await Article.findByIdAndUpdate(id, updateFields);
+  } catch (err) {
+    console.log(err);
+    throw new Error("Failed to update product!");
+  }
+
+  revalidatePath("/dashboard/news");
+  redirect("/dashboard/news");
+};
+
 export const deleteUser = async (formData) => {
   const { id } = Object.fromEntries(formData);
 
@@ -137,7 +237,7 @@ export const deleteUser = async (formData) => {
     throw new Error("Failed to delete user!");
   }
 
-  revalidatePath("/dashboard/products");
+  revalidatePath("/dashboard/users");
 };
 
 export const deleteProduct = async (formData) => {
@@ -152,6 +252,34 @@ export const deleteProduct = async (formData) => {
   }
 
   revalidatePath("/dashboard/products");
+};
+
+export const deleteArticle = async (formData) => {
+  const { id } = Object.fromEntries(formData);
+
+  try {
+    connectToDB();
+    await Article.findByIdAndDelete(id);
+  } catch (err) {
+    console.log(err);
+    throw new Error("Failed to delete product!");
+  }
+
+  revalidatePath("/dashboard/news");
+};
+
+export const deleteRecord = async (formData) => {
+  const { id } = Object.fromEntries(formData);
+
+  try {
+    connectToDB();
+    await User.findByIdAndDelete(id);
+  } catch (err) {
+    console.log(err);
+    throw new Error("Failed to delete record!");
+  }
+
+  revalidatePath("/dashboard/records");
 };
 
 export const authenticate = async (prevState, formData) => {

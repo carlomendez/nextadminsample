@@ -12,6 +12,7 @@ import {
   MdOutlineSettings,
   MdHelpCenter,
   MdLogout,
+  MdNote,
 } from "react-icons/md";
 import { auth, signOut } from "@/app/auth";
 
@@ -29,15 +30,15 @@ const menuItems = [
         path: "/dashboard/users",
         icon: <MdSupervisedUserCircle />,
       },
+      // {
+      //   title: "Products",
+      //   path: "/dashboard/products",
+      //   icon: <MdShoppingBag />,
+      // },
       {
-        title: "Products",
-        path: "/dashboard/products",
-        icon: <MdShoppingBag />,
-      },
-      {
-        title: "Transactions",
-        path: "/dashboard/transactions",
-        icon: <MdAttachMoney />,
+        title: "Articles",
+        path: "/dashboard/news",
+        icon: <MdNote />,
       },
     ],
   },
@@ -45,20 +46,15 @@ const menuItems = [
     title: "Analytics",
     list: [
       {
-        title: "Revenue",
-        path: "/dashboard/revenue",
-        icon: <MdWork />,
-      },
-      {
-        title: "Reports",
-        path: "/dashboard/reports",
+        title: "Records",
+        path: "/dashboard/records",
         icon: <MdAnalytics />,
       },
-      {
-        title: "Teams",
-        path: "/dashboard/teams",
-        icon: <MdPeople />,
-      },
+      // {
+      //   title: "Teams",
+      //   path: "/dashboard/teams",
+      //   icon: <MdPeople />,
+      // },
     ],
   },
   {
